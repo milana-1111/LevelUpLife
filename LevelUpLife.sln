@@ -5,6 +5,10 @@ VisualStudioVersion = 17.14.36623.8 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelUpLife", "LevelUpLife\LevelUpLife.csproj", "{A4A32461-608B-477C-94C5-052C35EE13FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelUpLife.Core", "LevelUpLife.Core\LevelUpLife.Core.csproj", "{027CEC25-7E39-4478-A519-9C25C7585C36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelUpLife.Tests", "LevelUpLife.Tests\LevelUpLife.Tests.csproj", "{1E1D722B-16D3-4B13-ADD9-1C7EEC9713DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A4A32461-608B-477C-94C5-052C35EE13FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4A32461-608B-477C-94C5-052C35EE13FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4A32461-608B-477C-94C5-052C35EE13FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{027CEC25-7E39-4478-A519-9C25C7585C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{027CEC25-7E39-4478-A519-9C25C7585C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{027CEC25-7E39-4478-A519-9C25C7585C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{027CEC25-7E39-4478-A519-9C25C7585C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E1D722B-16D3-4B13-ADD9-1C7EEC9713DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E1D722B-16D3-4B13-ADD9-1C7EEC9713DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E1D722B-16D3-4B13-ADD9-1C7EEC9713DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E1D722B-16D3-4B13-ADD9-1C7EEC9713DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
