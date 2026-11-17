@@ -1,16 +1,14 @@
 namespace LevelUpLife.Core.Models;
 
-/// <summary>
-/// Категория привычек (спорт, учёба, режим дня и т. д.).
-/// </summary>
+//Категория привычек(спорт, учёба, режим дня и т. д.)
 public class Category
 {
-    /// <summary>Идентификатор категории.</summary>
+    //Идентификатор категории
     public int Id { get; set; }
 
-    /// <summary>Название категории. Уникально.</summary>
+    //Название категории
     public string Name { get; set; } = string.Empty;
 
-    /// <summary>Привычки этой категории.</summary>
+    //Привычки этой категории
     public List<Habit> Habits { get; set; } = new();
 }
