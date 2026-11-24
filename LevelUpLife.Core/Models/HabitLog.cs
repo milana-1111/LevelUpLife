@@ -1,4 +1,5 @@
 using LevelUpLife.Core.Enums;
+using LevelUpLife.Core.States;
 
 namespace LevelUpLife.Core.Models;
 
@@ -19,6 +20,12 @@ public class HabitLog
     public Habit? Habit { get; set; }
 
     //Отмечает привычку выполненной и запоминает начисленный опыт
+
+    public IHabitState GetState()
+    {
+        return HabitStateFactory.Create(Status);
+    }
+
     public void Complete(int xp)
     {
         if (xp < 0)
@@ -26,24 +33,12 @@ public class HabitLog
             throw new ArgumentOutOfRangeException(nameof(xp), "Количество XP не может быть отрицательным.");
         }
 
-        if (Status == HabitStatus.Completed)
-        {
-            throw new InvalidOperationException("Привычка уже отмечена выполненной за этот день.");
-        }
-
-        Status = HabitStatus.Completed;
-        XpEarned = xp;
+        GetState().Complete(this, xp);
     }
 
     //Отмечает привычку пропущенной. Опыт за такой день не начисляется
     public void Skip()
     {
-        if (Status == HabitStatus.Completed)
-        {
-            throw new InvalidOperationException("Нельзя пропустить уже выполненную привычку.");
-        }
-
-        Status = HabitStatus.Missed;
-        XpEarned = 0;
+        GetState().Skip(this);
     }
 }
