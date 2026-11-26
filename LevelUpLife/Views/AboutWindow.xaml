@@ -1,0 +1,24 @@
+<Window x:Class="LevelUpLife.Views.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="О программе" Width="480" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        Background="{StaticResource WindowBrush}" PreviewKeyDown="Window_PreviewKeyDown">
+    <StackPanel Margin="28">
+        <TextBlock Text="Level Up Life" FontSize="26" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+        <TextBlock Text="Версия 1.0" Style="{StaticResource MutedText}" Margin="0,2,0,16"/>
+
+        <TextBlock Text="Тема курсового проекта" FontWeight="SemiBold"/>
+        <TextBlock TextWrapping="Wrap" Margin="0,2,0,12"
+                   Text="«Разработка десктопного трекера привычек «Level Up Life» с системой опыта и таблицей лидеров»"/>
+
+        <TextBlock Text="Исполнитель" FontWeight="SemiBold"/>
+        <TextBlock Text="Джумабаева Милана, группа 3ПК2" Margin="0,2,0,12"/>
+
+        <TextBlock Text="Учебное заведение" FontWeight="SemiBold"/>
+        <TextBlock TextWrapping="Wrap" Margin="0,2,0,16"
+                   Text="ГАПОУ «Оренбургский колледж экономики и информатики», МДК 01.01 «Разработка программных модулей», 2026"/>
+
+        <Button Content="ОК" HorizontalAlignment="Right" IsDefault="True" Click="OkButton_Click"/>
+    </StackPanel>
+</Window>

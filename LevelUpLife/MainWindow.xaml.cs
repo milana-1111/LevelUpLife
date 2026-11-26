@@ -1,24 +1,22 @@
-﻿using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using LevelUpLife.ViewModels;
 
-namespace LevelUpLife
+namespace LevelUpLife.Views;
+
+/// <summary>
+/// Главное окно приложения: профиль, список привычек и меню.
+/// </summary>
+public partial class MainWindow : Window
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Создаёт окно, подключает ViewModel и загружает данные после открытия.
     /// </summary>
-    public partial class MainWindow : Window
+    /// <param name="viewModel">ViewModel главного окна.</param>
+    public MainWindow(HabitListViewModel viewModel)
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        DataContext = viewModel;
+        viewModel.CloseRequested += (_, _) => Close();
+        Loaded += (_, _) => viewModel.Load();
     }
 }

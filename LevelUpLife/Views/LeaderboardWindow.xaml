@@ -1,0 +1,34 @@
+<Window x:Class="LevelUpLife.Views.LeaderboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Таблица лидеров" Height="520" Width="560" MinHeight="360" MinWidth="460"
+        WindowStartupLocation="CenterOwner" Background="{StaticResource WindowBrush}">
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding CloseCommand}"/>
+    </Window.InputBindings>
+    <DockPanel Margin="20">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+            <TextBlock Text="Таблица лидеров" FontSize="22" FontWeight="Bold"/>
+            <TextBlock Text="{Binding MyRankText}" Style="{StaticResource MutedText}" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+            <TextBlock Text="{Binding ErrorMessage}" Style="{StaticResource ErrorText}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Обновить" Command="{Binding RefreshCommand}"/>
+                <Button Content="Закрыть" Command="{Binding CloseCommand}" IsDefault="True"/>
+            </StackPanel>
+        </StackPanel>
+
+        <DataGrid ItemsSource="{Binding Entries}" AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                  RowHeight="32" Background="White">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Место" Binding="{Binding Rank}" Width="70"/>
+                <DataGridTextColumn Header="Игрок" Binding="{Binding DisplayName}" Width="*"/>
+                <DataGridTextColumn Header="Уровень" Binding="{Binding Level}" Width="90"/>
+                <DataGridTextColumn Header="Опыт (XP)" Binding="{Binding TotalXp}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
