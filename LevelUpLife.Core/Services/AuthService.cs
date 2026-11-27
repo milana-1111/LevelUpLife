@@ -10,8 +10,10 @@ namespace LevelUpLife.Core.Services;
 /// <summary>
 /// Регистрация, вход и сессии пользователей.
 /// Логин хранится в нижнем регистре, поэтому «Milana» и «milana» — один и тот же пользователь.
+/// Работает и как локальная авторизация (токен хранится в файле), и как серверная
+/// (токен возвращается клиенту, проверка по токену — <see cref="ITokenAuthenticator"/>).
 /// </summary>
-public class AuthService : IAuthService
+public class AuthService : IAuthService, ITokenAuthenticator
 {
     private static readonly TimeSpan SessionLifetime = TimeSpan.FromDays(30);
 
@@ -45,7 +47,7 @@ public class AuthService : IAuthService
     /// <param name="username">Логин.</param>
     /// <param name="password">Пароль.</param>
     /// <param name="displayName">Имя в таблице лидеров.</param>
-    /// <returns>Результат операции.</returns>
+    /// <returns>Результат операции. При успехе содержит пользователя и токен.</returns>
     public AuthResult Register(string username, string password, string displayName)
     {
         ValidationResult validation = _validator.ValidateRegistration(username, password, displayName);
@@ -79,8 +81,8 @@ public class AuthService : IAuthService
             return AuthResult.Fail("Пользователь с таким логином уже существует.");
         }
 
-        StartSession(db, user);
-        return AuthResult.Success(user);
+        string token = StartSession(db, user);
+        return AuthResult.Success(user, token);
     }
 
     /// <summary>
@@ -88,7 +90,7 @@ public class AuthService : IAuthService
     /// </summary>
     /// <param name="username">Логин.</param>
     /// <param name="password">Пароль.</param>
-    /// <returns>Результат операции.</returns>
+    /// <returns>Результат операции. При успехе содержит пользователя и токен.</returns>
     public AuthResult Login(string username, string password)
     {
         ValidationResult validation = _validator.ValidateLogin(username, password);
@@ -106,8 +108,8 @@ public class AuthService : IAuthService
             return AuthResult.Fail("Неверный логин или пароль.");
         }
 
-        StartSession(db, user);
-        return AuthResult.Success(user);
+        string token = StartSession(db, user);
+        return AuthResult.Success(user, token);
     }
 
     /// <summary>
@@ -118,13 +120,7 @@ public class AuthService : IAuthService
         string? token = _sessionStore.Load();
         if (token != null)
         {
-            using AppDbContext db = _dbFactory.CreateDbContext();
-            Session? session = db.Sessions.FirstOrDefault(s => s.Token == token);
-            if (session != null)
-            {
-                db.Sessions.Remove(session);
-                db.SaveChanges();
-            }
+            Revoke(token);
         }
 
         _sessionStore.Clear();
@@ -142,15 +138,45 @@ public class AuthService : IAuthService
             return AuthResult.Fail("Сессия не найдена.");
         }
 
+        AuthResult result = Authenticate(token);
+        if (!result.IsSuccess)
+        {
+            _sessionStore.Clear();
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Проверяет токен и возвращает пользователя, которому он принадлежит.
+    /// </summary>
+    /// <param name="token">Токен сессии.</param>
+    /// <returns>Результат проверки. При успехе содержит пользователя.</returns>
+    public AuthResult Authenticate(string token)
+    {
         using AppDbContext db = _dbFactory.CreateDbContext();
         Session? session = db.Sessions.Include(s => s.User).FirstOrDefault(s => s.Token == token);
         if (session == null || session.User == null || session.IsExpired())
         {
-            _sessionStore.Clear();
             return AuthResult.Fail("Сессия недействительна. Войдите заново.");
         }
 
-        return AuthResult.Success(session.User);
+        return AuthResult.Success(session.User, token);
+    }
+
+    /// <summary>
+    /// Отзывает токен: сессия удаляется, и токен перестаёт работать.
+    /// </summary>
+    /// <param name="token">Токен сессии.</param>
+    public void Revoke(string token)
+    {
+        using AppDbContext db = _dbFactory.CreateDbContext();
+        Session? session = db.Sessions.FirstOrDefault(s => s.Token == token);
+        if (session != null)
+        {
+            db.Sessions.Remove(session);
+            db.SaveChanges();
+        }
     }
 
     /// <summary>
@@ -179,7 +205,8 @@ public class AuthService : IAuthService
     /// </summary>
     /// <param name="db">Контекст базы данных.</param>
     /// <param name="user">Пользователь, для которого создаётся сессия.</param>
-    private void StartSession(AppDbContext db, User user)
+    /// <returns>Токен новой сессии.</returns>
+    private string StartSession(AppDbContext db, User user)
     {
         DateTime now = DateTime.UtcNow;
         List<Session> expired = db.Sessions.Where(s => s.UserId == user.Id && s.ExpiresAt <= now).ToList();
@@ -195,5 +222,6 @@ public class AuthService : IAuthService
         db.SaveChanges();
 
         _sessionStore.Save(token);
+        return token;
     }
 }

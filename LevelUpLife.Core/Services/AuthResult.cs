@@ -3,7 +3,7 @@ using LevelUpLife.Core.Models;
 namespace LevelUpLife.Core.Services;
 
 /// <summary>
-/// Результат входа, регистрации или восстановления сессии.
+/// Результат входа, регистрации или проверки сессии.
 /// </summary>
 public class AuthResult
 {
@@ -13,6 +13,9 @@ public class AuthResult
     /// <summary>Пользователь (заполнен только при успехе).</summary>
     public User? User { get; private set; }
 
+    /// <summary>Токен сессии (заполнен при входе, регистрации и проверке токена).</summary>
+    public string? Token { get; private set; }
+
     /// <summary>Сообщение об ошибке для пользователя (заполнено только при неудаче).</summary>
     public string ErrorMessage { get; private set; } = string.Empty;
 
@@ -20,10 +23,11 @@ public class AuthResult
     /// Создаёт успешный результат.
     /// </summary>
     /// <param name="user">Пользователь, который вошёл в систему.</param>
+    /// <param name="token">Токен сессии, если он есть.</param>
     /// <returns>Успешный результат.</returns>
-    public static AuthResult Success(User user)
+    public static AuthResult Success(User user, string? token = null)
     {
-        return new AuthResult { IsSuccess = true, User = user };
+        return new AuthResult { IsSuccess = true, User = user, Token = token };
     }
 
     /// <summary>
